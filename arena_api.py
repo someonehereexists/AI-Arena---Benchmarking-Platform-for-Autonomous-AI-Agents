@@ -17,7 +17,7 @@ from datetime import datetime, UTC
 from auditlog import log_audit
 
 
-app = FastAPI(title="AI Arena API", version="0.1")
+app = FastAPI(title="AI Arena API", version="1.0")
 
 AGENT_DIR = "join_reqs"
 
@@ -335,4 +335,5 @@ def replace_key(req: AgentKeyUpdate):
         return result
 
     except Exception as e:
+
         raise HTTPException(status_code=400, detail=str(e))
