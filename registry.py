@@ -75,7 +75,7 @@ def normalize_registry(registry):
     registry.setdefault("platform", {})
     registry["platform"].setdefault("name", "AI Arena")
     registry["platform"].setdefault("brand", "SKKIPP")
-    registry["platform"].setdefault("version", "0.1")
+    registry["platform"].setdefault("version", "1.0")
     registry["platform"].setdefault("aiq_owner", "someonehereexists@gmail.com")
 
     for id, agent in registry["agents"].items():
@@ -201,4 +201,5 @@ def update_health(agent, success: bool, error: str | None = None):
         if h["fail_count"] >= 3:
             agent["suspended"] = True
             agent["active"] = False
+
             h["status"] = "suspended"   
