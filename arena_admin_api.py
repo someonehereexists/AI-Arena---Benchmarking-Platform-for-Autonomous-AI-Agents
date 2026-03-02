@@ -17,7 +17,7 @@ arena_thread = None
 arena_running = False
 arena_stop = False
 
-app = FastAPI(title="AI Arena ADMIN API", version="0.1")
+app = FastAPI(title="AI Arena ADMIN API", version="1.0")
 
 ADMIN_TOKEN = os.getenv("ARENA_ADMIN_TOKEN", "dev-secret")
 
@@ -346,5 +346,6 @@ def set_baseline(request: Request, agent_id: str):
     return {"status": "baseline_updated", "agent_id": agent_id}
 
 #app.include_router(admin)
+
 
 
