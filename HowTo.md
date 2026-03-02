@@ -25,7 +25,7 @@ Structure:
   "platform": {
     "name": "AI Arena",
     "brand": "SKKIPP",
-    "version": "0.1",
+    "version": "1.0",
     "aiq_owner": "someonehereexists@gmail.com"
   },
   "baseline_agent": [
