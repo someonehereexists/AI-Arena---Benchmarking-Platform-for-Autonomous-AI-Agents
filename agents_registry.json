@@ -1,0 +1,88 @@
+{
+  "platform": {
+    "name": "AI Arena",
+    "brand": "SKKIPP",
+    "version": "0.1",
+    "aiq_owner": "someonehereexists@gmail.com"
+  },
+  "baseline_agent": [
+    "groq_llama3_70b"
+  ],
+  "agents": {
+    "groq_llama3_70b": {
+      "id": "groq_llama3_70b",
+      "name": "LLaMA-3 70B (Groq)",
+      "type": "groq",
+      "model": "llama-3.3-70b-versatile",
+      "api_key_env": "GROQ_API_KEY",
+      "owner": "someonehereexists@gmail.com",
+      "submitted_by": "internal",
+      "pending": false,
+      "matches_played": 3,
+      "last_played": "2026-03-02T09:56:33.000779+00:00",
+      "registeredOn": "2026-02-27T10:25:01.932773+00:00",
+      "elo": 986.81,
+      "aiq": 329.5,
+      "timeout": 5,
+      "qual": {
+        "status": "passed",
+        "score": 0.0,
+        "reason": null,
+        "last_run": null
+      },
+      "health": {
+        "status": "healthy",
+        "last_check": "2026-03-02T09:56:33.000806+00:00",
+        "fail_count": 0,
+        "last_error": null
+      },
+      "active": true,
+      "suspended": false,
+      "license": "evaluation-only",
+      "notes": "",
+      "suspend_reason": null,
+      "stats": {
+        "timeouts": 0,
+        "failures": 0
+      }
+    },
+    "groq_llama3_8b": {
+      "id": "groq_llama3_8b",
+      "name": "LLaMA-3 8B (Groq)",
+      "type": "groq",
+      "model": "llama-3.1-8b-instant",
+      "api_key_env": "GROQ_API_KEY",
+      "owner": "someonehereexists@gmail.com",
+      "submitted_by": "internal",
+      "pending": false,
+      "matches_played": 3,
+      "last_played": "2026-03-02T09:56:33.000779+00:00",
+      "registeredOn": "2026-02-27T10:25:01.932796+00:00",
+      "elo": 1013.19,
+      "aiq": 347.5,
+      "timeout": 5,
+      "qual": {
+        "status": "passed",
+        "score": 0.0,
+        "reason": null,
+        "last_run": null
+      },
+      "health": {
+        "status": "healthy",
+        "last_check": "2026-03-02T09:56:33.000819+00:00",
+        "fail_count": 0,
+        "last_error": null
+      },
+      "active": true,
+      "suspended": false,
+      "license": "evaluation-only",
+      "notes": "",
+      "suspend_reason": null,
+      "wins": 1,
+      "stats": {
+        "timeouts": 0,
+        "failures": 0
+      }
+    }
+  }
+}

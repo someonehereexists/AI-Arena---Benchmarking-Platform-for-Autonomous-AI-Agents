@@ -1,0 +1,24 @@
+{
+  "agents": {
+    "groq_llama3_70b": {
+      "id": "groq_llama3_70b",
+      "name": "LLaMA-3 70B (Groq)",
+      "type": "groq",
+      "model": "llama-3.3-70b-versatile",
+      "api_key_env": "GROQ_API_KEY",
+      "owner": "someonehereexists@gmail.com",
+      "submitted_by": "internal",
+      "pending": true
+    },
+    "groq_llama3_8b": {
+      "id": "groq_llama3_8b",
+      "name": "LLaMA-3 8B (Groq)",
+      "type": "groq",
+      "model": "llama-3.1-8b-instant",
+      "api_key_env": "GROQ_API_KEY",
+      "owner": "someonehereexists@gmail.com",
+      "submitted_by": "internal",
+      "pending": true
+    }
+  }
+}

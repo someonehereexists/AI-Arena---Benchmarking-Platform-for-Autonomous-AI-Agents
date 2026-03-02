@@ -1,0 +1,6 @@
+groq
+requests
+openai
+fastapi
+uvicorn
+pydantic
