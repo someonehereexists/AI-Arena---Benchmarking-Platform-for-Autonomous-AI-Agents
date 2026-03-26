@@ -25,10 +25,10 @@ ADMIN_TOKEN = os.getenv("ARENA_ADMIN_TOKEN", "dev-secret")
 #admin = APIRouter(prefix="/admin", tags=["admin"])
 
 def _verify_admin(request: Request):
-    client_ip = request.client.host
+#    client_ip = request.client.host
 
-    if client_ip not in ("127.0.0.1", "::1"):
-        raise HTTPException(status_code=403, detail="Forbidden")
+#    if client_ip not in ("127.0.0.1", "::1"):
+#        raise HTTPException(status_code=403, detail="Forbidden")
 
     token = request.headers.get("X-Admin-Token")
     if token != ADMIN_TOKEN:
@@ -47,7 +47,7 @@ def _verify_admin(request: Request):
 def _shutdown():
     os.kill(os.getpid(), signal.SIGINT)
 
-@app.post("/admin/shutdown")
+@app.post("/shutdown")
 def shutdown(background_tasks: BackgroundTasks, request: Request):
     _verify_admin(request)
     
@@ -60,7 +60,7 @@ def shutdown(background_tasks: BackgroundTasks, request: Request):
 #  $headers = @{ "X-Admin-Token" = "dev-secret" }
 #  Invoke-RestMethod http://127.0.0.1:8001/admin/registry -Headers $headers
 
-@app.get("/admin/registry")
+@app.get("/registry")
 def get_registry(request: Request):
     _verify_admin(request)
     return load_registry()
@@ -71,7 +71,7 @@ def get_registry(request: Request):
 #  $headers = @{ "X-Admin-Token" = "dev-secret" }
 #  Invoke-RestMethod -Method Post http://127.0.0.1:8001/admin/agents/AGENT_ID/suspend -Headers $headers
 
-@app.post("/admin/agents/{agent_id}/suspend")
+@app.post("/agents/{agent_id}/suspend")
 def suspend_agent(agent_id: str, request: Request):
     _verify_admin(request)
 
@@ -104,7 +104,7 @@ def suspend_agent(agent_id: str, request: Request):
 #  $headers = @{ "X-Admin-Token" = "dev-secret" }
 #  Invoke-RestMethod -Method Post http://127.0.0.1:8001/admin/agents/AGENT_ID/activate -Headers $headers
 
-@app.post("/admin/agents/{agent_id}/activate")
+@app.post("/agents/{agent_id}/activate")
 def activate_agent(agent_id: str, request: Request):
     _verify_admin(request)
 
@@ -134,7 +134,7 @@ def activate_agent(agent_id: str, request: Request):
 #  $headers = @{ "X-Admin-Token" = "dev-secret" }
 #  Invoke-RestMethod -Method Post http://127.0.0.1:8001/admin/health/run -Headers $headers
 
-@app.post("/admin/health/run")
+@app.post("/health/run")
 def run_health(request: Request):
     _verify_admin(request)
 
@@ -170,7 +170,7 @@ def run_arena(interval: int, loop: bool):
 #  $headers = @{ "X-Admin-Token" = "dev-secret" }
 #  Invoke-RestMethod -Method Post http://127.0.0.1:8001/admin/start/30 -Headers $headers
 
-@app.post("/admin/start/{interval}")
+@app.post("/start/{interval}")
 def start_arena(request: Request, interval: int):
     _verify_admin(request)
 
@@ -200,7 +200,7 @@ def start_arena(request: Request, interval: int):
 #  $headers = @{ "X-Admin-Token" = "dev-secret" }
 #  Invoke-RestMethod -Method Post http://127.0.0.1:8001/admin/stop-loop -Headers $headers
 
-@app.post("/admin/stop-loop")
+@app.post("/stop-loop")
 def stop_loop(request: Request):
     _verify_admin(request)
     
@@ -218,7 +218,7 @@ def stop_loop(request: Request):
 #  $headers = @{ "X-Admin-Token" = "dev-secret" }
 #  Invoke-RestMethod -Method Post http://127.0.0.1:8001/admin/match/run_once -Headers $headers
 
-@app.post("/admin/match/run_once")
+@app.post("/match/run_once")
 def run_one_match(request: Request):
     _verify_admin(request)
 
@@ -231,7 +231,7 @@ def run_one_match(request: Request):
 #  $headers = @{ "X-Admin-Token" = "dev-secret" }
 #  Invoke-RestMethod -Method Post http://127.0.0.1:8001/admin/match/run_batch/2 -Headers $headers
 
-@app.post("/admin/match/run_batch/{run}")
+@app.post("/match/run_batch/{run}")
 def run_batch(request: Request, run: int):
     _verify_admin(request)
 
@@ -272,7 +272,7 @@ def _restart():
     os.kill(os.getpid(), signal.SIGINT)
 
 
-@app.post("/admin/restart")
+@app.post("/restart")
 def restart(background_tasks: BackgroundTasks, request: Request):
     _verify_admin(request)
     
@@ -286,7 +286,7 @@ def restart(background_tasks: BackgroundTasks, request: Request):
 #  $headers = @{ "X-Admin-Token" = "dev-secret" }
 #  Invoke-RestMethod http://127.0.0.1:8001/admin/agents -Headers $headers
 
-@app.get("/admin/agents")
+@app.get("/agents")
 def agent_status(request: Request):
     _verify_admin(request)
     registry = load_registry()
@@ -321,7 +321,7 @@ def agent_status(request: Request):
 #  $headers = @{ "X-Admin-Token" = "dev-secret" }
 #  Invoke-RestMethod -Method Post http://127.0.0.1:8001/admin/set-baseline/groq_llama3_70b -Headers $headers
 
-@app.post("/admin/set-baseline/{agent_id}")
+@app.post("/set-baseline/{agent_id}")
 def set_baseline(request: Request, agent_id: str):
     _verify_admin(request)
     registry = load_registry()
