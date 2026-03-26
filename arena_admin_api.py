@@ -17,7 +17,14 @@ arena_thread = None
 arena_running = False
 arena_stop = False
 
-app = FastAPI(title="AI Arena ADMIN API", version="1.0")
+#app = FastAPI(title="AI Arena ADMIN API", version="1.0")
+app = FastAPI(
+    title="AI Arena ADMIN API",
+    version="0.1",
+    docs_url="/docs",
+    redoc_url="/redoc",
+    openapi_url="/openapi.json"
+)
 
 ADMIN_TOKEN = os.getenv("ARENA_ADMIN_TOKEN", "dev-secret")
 
