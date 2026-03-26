@@ -38,6 +38,10 @@ def agent_exists(registry, name):
 # Endpoints
 # ----------------------------
 
+@app.get("/version")
+def version():
+    return {"api-version": "0.1"}
+
 @app.get("/")
 def root():
     return {
