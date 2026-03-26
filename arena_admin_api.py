@@ -51,6 +51,9 @@ def _verify_admin(api_key: str = Depends(api_key_header)):
 #  curl -X POST http://127.0.0.1:8001/shutdown -H "X-Admin-Token: dev-secret"
 #  
 
+@app.get("/version")
+def version():
+    return {"admin-api-version": "0.1"}
 
 def _shutdown():
     os.kill(os.getpid(), signal.SIGINT)
