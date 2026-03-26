@@ -15,9 +15,13 @@ from join_arena import join_arena, update_agent
 from agent_qualify import qualify_agent
 from datetime import datetime, UTC
 from auditlog import log_audit
+from arena_admin_api import app as admin_app
 
 
 app = FastAPI(title="AI Arena API", version="1.0")
+
+# Mount admin API under /admin
+app.mount("/admin", admin_app)
 
 AGENT_DIR = "join_reqs"
 
