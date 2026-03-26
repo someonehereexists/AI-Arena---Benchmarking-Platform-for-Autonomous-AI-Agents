@@ -6,7 +6,8 @@
 # taskkill /PID 10360 /f
 
 import os, sys, threading, signal, subprocess
-from fastapi import FastAPI, APIRouter, Request, HTTPException, BackgroundTasks
+from fastapi.security import APIKeyHeader
+from fastapi import FastAPI, APIRouter, Request, HTTPException, BackgroundTasks, Depends
 from registry import load_registry, save_registry, find_agent
 from master_ai import health_police
 from ai_arena_mvp_groq import run_ai_arena
@@ -16,6 +17,7 @@ from auditlog import admin_log
 arena_thread = None
 arena_running = False
 arena_stop = False
+api_key_header = APIKeyHeader(name="X-Admin-Token")
 
 #app = FastAPI(title="AI Arena ADMIN API", version="1.0")
 app = FastAPI(
@@ -31,14 +33,13 @@ ADMIN_TOKEN = os.getenv("ARENA_ADMIN_TOKEN", "dev-secret")
 #create admin router 
 #admin = APIRouter(prefix="/admin", tags=["admin"])
 
-def _verify_admin(request: Request):
-#    client_ip = request.client.host
+#def _verify_admin(request: Request):
+#    token = request.headers.get("X-Admin-Token")
+#    if token != ADMIN_TOKEN:
+#        raise HTTPException(status_code=403, detail="Invalid admin token")
 
-#    if client_ip not in ("127.0.0.1", "::1"):
-#        raise HTTPException(status_code=403, detail="Forbidden")
-
-    token = request.headers.get("X-Admin-Token")
-    if token != ADMIN_TOKEN:
+def _verify_admin(api_key: str = Depends(api_key_header)):
+    if api_key != ADMIN_TOKEN:
         raise HTTPException(status_code=403, detail="Invalid admin token")
 
 
@@ -55,8 +56,8 @@ def _shutdown():
     os.kill(os.getpid(), signal.SIGINT)
 
 @app.post("/shutdown")
-def shutdown(background_tasks: BackgroundTasks, request: Request):
-    _verify_admin(request)
+def shutdown(background_tasks: BackgroundTasks, request: Request, _: str = Depends(_verify_admin)):
+    #_verify_admin(request)
     
     background_tasks.add_task(_shutdown)
     return {"status": "shutting down"}
@@ -68,8 +69,8 @@ def shutdown(background_tasks: BackgroundTasks, request: Request):
 #  Invoke-RestMethod http://127.0.0.1:8001/admin/registry -Headers $headers
 
 @app.get("/registry")
-def get_registry(request: Request):
-    _verify_admin(request)
+def get_registry(request: Request, _: str = Depends(_verify_admin)):
+    #_verify_admin(request)
     return load_registry()
 
 
@@ -79,8 +80,8 @@ def get_registry(request: Request):
 #  Invoke-RestMethod -Method Post http://127.0.0.1:8001/admin/agents/AGENT_ID/suspend -Headers $headers
 
 @app.post("/agents/{agent_id}/suspend")
-def suspend_agent(agent_id: str, request: Request):
-    _verify_admin(request)
+def suspend_agent(agent_id: str, request: Request, _: str = Depends(_verify_admin)):
+    #_verify_admin(request)
 
     registry = load_registry()
     agent = find_agent(registry, agent_id=agent_id)
@@ -112,8 +113,8 @@ def suspend_agent(agent_id: str, request: Request):
 #  Invoke-RestMethod -Method Post http://127.0.0.1:8001/admin/agents/AGENT_ID/activate -Headers $headers
 
 @app.post("/agents/{agent_id}/activate")
-def activate_agent(agent_id: str, request: Request):
-    _verify_admin(request)
+def activate_agent(agent_id: str, request: Request, _: str = Depends(_verify_admin)):
+    #_verify_admin(request)
 
     registry = load_registry()
     agent = find_agent(registry, agent_id=agent_id)
@@ -142,8 +143,8 @@ def activate_agent(agent_id: str, request: Request):
 #  Invoke-RestMethod -Method Post http://127.0.0.1:8001/admin/health/run -Headers $headers
 
 @app.post("/health/run")
-def run_health(request: Request):
-    _verify_admin(request)
+def run_health(request: Request, _: str = Depends(_verify_admin)):
+    #_verify_admin(request)
 
     result = health_police()
 
@@ -157,7 +158,7 @@ def run_health(request: Request):
 
 
 
-def run_arena(interval: int, loop: bool):
+def run_arena(interval: int, loop: bool, _: str = Depends(_verify_admin)):
     while True:
         if arena_stop:
             print("Arena loop stop requested")
@@ -178,8 +179,8 @@ def run_arena(interval: int, loop: bool):
 #  Invoke-RestMethod -Method Post http://127.0.0.1:8001/admin/start/30 -Headers $headers
 
 @app.post("/start/{interval}")
-def start_arena(request: Request, interval: int):
-    _verify_admin(request)
+def start_arena(request: Request, interval: int, _: str = Depends(_verify_admin)):
+#    _verify_admin(request)
 
     global arena_thread, arena_running
 
@@ -208,8 +209,8 @@ def start_arena(request: Request, interval: int):
 #  Invoke-RestMethod -Method Post http://127.0.0.1:8001/admin/stop-loop -Headers $headers
 
 @app.post("/stop-loop")
-def stop_loop(request: Request):
-    _verify_admin(request)
+def stop_loop(request: Request, _: str = Depends(_verify_admin)):
+#    _verify_admin(request)
     
     global arena_stop, arena_running
 
@@ -226,8 +227,8 @@ def stop_loop(request: Request):
 #  Invoke-RestMethod -Method Post http://127.0.0.1:8001/admin/match/run_once -Headers $headers
 
 @app.post("/match/run_once")
-def run_one_match(request: Request):
-    _verify_admin(request)
+def run_one_match(request: Request, _: str = Depends(_verify_admin)):
+#    _verify_admin(request)
 
     result = run_ai_arena()   # must return MatchResult dict
     return {"status": "match_completed", "result": result}
@@ -239,8 +240,8 @@ def run_one_match(request: Request):
 #  Invoke-RestMethod -Method Post http://127.0.0.1:8001/admin/match/run_batch/2 -Headers $headers
 
 @app.post("/match/run_batch/{run}")
-def run_batch(request: Request, run: int):
-    _verify_admin(request)
+def run_batch(request: Request, run: int, _: str = Depends(_verify_admin)):
+#    _verify_admin(request)
 
     results = []
     for _ in range(run):
@@ -280,8 +281,8 @@ def _restart():
 
 
 @app.post("/restart")
-def restart(background_tasks: BackgroundTasks, request: Request):
-    _verify_admin(request)
+def restart(background_tasks: BackgroundTasks, request: Request, _: str = Depends(_verify_admin)):
+#    _verify_admin(request)
     
     background_tasks.add_task(_restart)
     return {"status": "restarting"}
@@ -294,8 +295,8 @@ def restart(background_tasks: BackgroundTasks, request: Request):
 #  Invoke-RestMethod http://127.0.0.1:8001/admin/agents -Headers $headers
 
 @app.get("/agents")
-def agent_status(request: Request):
-    _verify_admin(request)
+def agent_status(request: Request, _: str = Depends(_verify_admin)):
+#    _verify_admin(request)
     registry = load_registry()
 
     agents_view = []
@@ -329,8 +330,8 @@ def agent_status(request: Request):
 #  Invoke-RestMethod -Method Post http://127.0.0.1:8001/admin/set-baseline/groq_llama3_70b -Headers $headers
 
 @app.post("/set-baseline/{agent_id}")
-def set_baseline(request: Request, agent_id: str):
-    _verify_admin(request)
+def set_baseline(request: Request, agent_id: str, _: str = Depends(_verify_admin)):
+#    _verify_admin(request)
     registry = load_registry()
 
     if agent_id not in registry["agents"]:
