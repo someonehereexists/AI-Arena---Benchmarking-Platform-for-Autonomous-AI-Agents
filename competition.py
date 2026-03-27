@@ -1,11 +1,14 @@
-import json, random, uuid, os
+import json, random, uuid, os, psycopg2
 from utils import normalize
 from utils import log_info
 from dataclasses import dataclass, asdict
 from typing import List, Optional, Dict, Any
 from datetime import datetime, UTC
-#from registry import update_health
-#import uuid
+
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+def get_conn():
+    return psycopg2.connect(DATABASE_URL)
 
 MATCH_DIR = "matches"
 BRAND_DATA = f"brand.json"
@@ -332,6 +335,51 @@ def determine_winner(builder) -> WinStat:
     )
 
 
+def save_match_to_db(match_result: dict):
+    try:
+        conn = get_conn()
+        cur = conn.cursor()
+
+        agents = match_result.get("agents", {})
+        agent_ids = list(agents.keys())
+
+        agent_a = agent_ids[0] if len(agent_ids) > 0 else None
+        agent_b = agent_ids[1] if len(agent_ids) > 1 else None
+
+        scores = match_result.get("scores", {})
+
+        score_a = scores.get(agent_a)
+        score_b = scores.get(agent_b)
+
+        cur.execute(
+            """
+            INSERT INTO matches (
+                match_id, agent_a, agent_b, winner,
+                score_a, score_b, metadata, created_at
+            )
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+            ON CONFLICT (match_id) DO NOTHING
+            """,
+            (
+                match_result.get("match_id"),
+                agent_a,
+                agent_b,
+                match_result.get("winner"),
+                score_a,
+                score_b,
+                json.dumps(match_result),
+                match_result.get("timestamp")
+            )
+        )
+
+        conn.commit()
+        cur.close()
+        conn.close()
+
+    except Exception as e:
+        print(f"DB match save failed: {e}")
+
+
 def export_match(match_result: dict):
     date = match_result["timestamp"][:10]
 
@@ -344,6 +392,8 @@ def export_match(match_result: dict):
     with open(filepath, "w", encoding="utf-8") as f:
         json.dump(match_result, f, indent=2)
 
+    save_match_to_db(match_result)    
+    
     return filepath
 
 
