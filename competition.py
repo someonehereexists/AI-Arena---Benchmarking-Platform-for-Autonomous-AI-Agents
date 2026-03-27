@@ -372,6 +372,8 @@ def save_match_to_db(match_result: dict):
             )
         )
 
+        print(f"Saving Match result to DB")
+        
         conn.commit()
         cur.close()
         conn.close()
@@ -388,7 +390,9 @@ def export_match(match_result: dict):
 
     filename = f'match_{match_result["match_id"]}.json'
     filepath = os.path.join(path, filename)
-
+    
+    print(f"Exporting Match result")
+    
     with open(filepath, "w", encoding="utf-8") as f:
         json.dump(match_result, f, indent=2)
 
