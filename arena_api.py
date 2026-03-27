@@ -9,7 +9,7 @@ import os, json
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from typing import Optional
-from registry import load_registry, save_registry, find_agent
+from registry import load_registry, save_registry, find_agent, init_db
 from utils import log_info
 from join_arena import join_arena, update_agent
 from agent_qualify import qualify_agent
@@ -25,6 +25,7 @@ app.mount("/admin", admin_app)
 
 AGENT_DIR = "join_reqs"
 
+init_db()
 
 # ----------------------------
 # Helpers
