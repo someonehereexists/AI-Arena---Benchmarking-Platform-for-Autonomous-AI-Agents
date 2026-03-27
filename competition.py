@@ -344,28 +344,25 @@ def save_match_to_db(match_result: dict):
 
         agent_a = None
         agent_b = None
-
-        if isinstance(agents, dict):
-            agent_ids = list(agents.keys())
-            agent_a = agent_ids[0] if len(agent_ids) > 0 else None
-            agent_b = agent_ids[1] if len(agent_ids) > 1 else None
-
-        elif isinstance(agents, list):
-            agent_a = agents[0].get("id") if len(agents) > 0 else None
-            agent_b = agents[1].get("id") if len(agents) > 1 else None
-
-        scores = match_result.get("scores", {})
-
         score_a = None
         score_b = None
 
-        if isinstance(scores, dict):
-            score_a = scores.get(agent_a)
-            score_b = scores.get(agent_b)
+        if isinstance(agents, list):
+            if len(agents) > 0:
+                agent_a = agents[0].get("name")
+                score_a = agents[0].get("score")
 
-        elif isinstance(scores, list):
-            score_a = scores[0] if len(scores) > 0 else None
-            score_b = scores[1] if len(scores) > 1 else None
+            if len(agents) > 1:
+                agent_b = agents[1].get("name")
+                score_b = agents[1].get("score")
+
+        # winner handling
+        win_stat = match_result.get("win_stat", {})
+        winner = win_stat.get("winner")
+
+        # handle draw case
+        if win_stat.get("is_draw"):
+            winner = "draw"
 
         cur.execute(
             """
@@ -380,7 +377,7 @@ def save_match_to_db(match_result: dict):
                 match_result.get("match_id"),
                 agent_a,
                 agent_b,
-                match_result.get("winner"),
+                winner,
                 score_a,
                 score_b,
                 json.dumps(match_result),
@@ -388,7 +385,7 @@ def save_match_to_db(match_result: dict):
             )
         )
 
-        print(f"Saving Match result to DB")
+        print(f"Saving Match Result to DB")
         
         conn.commit()
         cur.close()
