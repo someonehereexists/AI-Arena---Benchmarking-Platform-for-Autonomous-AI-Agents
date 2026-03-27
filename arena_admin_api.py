@@ -53,7 +53,7 @@ def _verify_admin(api_key: str = Depends(api_key_header)):
 
 @app.get("/version")
 def version():
-    return {"admin-api-version": "0.1"}
+    return {"admin-api-version": "0.2"}
 
 def _shutdown():
     os.kill(os.getpid(), signal.SIGINT)
