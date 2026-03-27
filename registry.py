@@ -1,9 +1,12 @@
-import json
+import os, json, psycopg2
 from datetime import datetime, UTC
 from utils import log_info
 from qualification import qualify_pending_agents
+from psycopg2.extras import RealDictCursor
 
-REGISTRY_FILE = "agents_registry.json"
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+#REGISTRY_FILE = "agents_registry.json"
 
 BASELINE_AGENT = "baseline_agent.json"
 
@@ -31,6 +34,7 @@ BASELINE_DEFAULT = {
     }
   }
 }
+
 # ----------------------------
 # Normalization
 # ----------------------------
@@ -85,6 +89,37 @@ def normalize_registry(registry):
     
     return registry
 
+def get_conn():
+    return psycopg2.connect(DATABASE_URL)
+
+
+def init_db():
+    conn = get_conn()
+    cur = conn.cursor()
+
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS registry (
+        id SERIAL PRIMARY KEY,
+        data JSONB
+    )
+    """)
+
+    cur.execute("SELECT COUNT(*) FROM registry")
+    count = cur.fetchone()[0]
+
+    if count == 0:
+        baseline = BASELINE_DEFAULT
+        registry = {"platform": {}, "baseline_agent": [], "agents": baseline["agents"]}
+        normalize_registry(registry)
+
+        cur.execute(
+            "INSERT INTO registry (data) VALUES (%s)",
+            [json.dumps(registry)]
+        )
+
+    conn.commit()
+    cur.close()
+    conn.close()
 
 # ----------------------------
 # Load / Save / Retrieve
@@ -92,32 +127,81 @@ def normalize_registry(registry):
 
 def load_registry():
     try:
-        with open(REGISTRY_FILE) as f:
-            registry = json.load(f)
-    except Exception:
-        log_info(f"Registry not found")
-        log_info(f"Creating default registry...")
-        try:
-            with open(BASELINE_AGENT) as f:
-                baseline = json.load(f)
-        except Exception:
-            log_info(f"Baseline Agents not found")
-            log_info(f"Creating default baseline agents...")
-            baseline = BASELINE_DEFAULT
-             
-        baseline_agents = baseline.get("agents", {})
+        conn = get_conn()
+        cur = conn.cursor(cursor_factory=RealDictCursor)
 
-        registry = {"platform":{}, "baseline_agent": [], "agents":baseline_agents}
-        normalize_registry(registry)
-        save_registry(registry)
-        qualify_pending_agents(registry)
-        save_registry(registry)
-   
-    return registry            
+        cur.execute("SELECT data FROM registry LIMIT 1")
+        row = cur.fetchone()
+
+        cur.close()
+        conn.close()
+
+        if row:
+            return row["data"]
+
+    except Exception as e:
+        log_info(f"DB load failed: {e}")
+
+    # fallback (first run)
+    log_info("Initializing DB registry...")
+
+    init_db()
+
+    conn = get_conn()
+    cur = conn.cursor(cursor_factory=RealDictCursor)
+    cur.execute("SELECT data FROM registry LIMIT 1")
+    row = cur.fetchone()
+
+    cur.close()
+    conn.close()
+
+    return row["data"]
+  
+#def load_registry():
+#    try:
+#        with open(REGISTRY_FILE) as f:
+#            registry = json.load(f)
+#    except Exception:
+#        log_info(f"Registry not found")
+#        log_info(f"Creating default registry...")
+#        try:
+#            with open(BASELINE_AGENT) as f:
+#                baseline = json.load(f)
+#        except Exception:
+#            log_info(f"Baseline Agents not found")
+#            log_info(f"Creating default baseline agents...")
+#            baseline = BASELINE_DEFAULT
+#             
+#        baseline_agents = baseline.get("agents", {})
+#
+#        registry = {"platform":{}, "baseline_agent": [], "agents":baseline_agents}
+#        normalize_registry(registry)
+#        save_registry(registry)
+#        qualify_pending_agents(registry)
+#        save_registry(registry)
+#   
+#    return registry            
 
 def save_registry(registry):
-    with open(REGISTRY_FILE, "w") as f:
-        json.dump(registry, f, indent=2)
+    try:
+        conn = get_conn()
+        cur = conn.cursor()
+
+        cur.execute(
+            "UPDATE registry SET data = %s WHERE id = 1",
+            [json.dumps(registry)]
+        )
+
+        conn.commit()
+        cur.close()
+        conn.close()
+
+    except Exception as e:
+        log_info(f"DB save failed: {e}")
+      
+#def save_registry(registry):
+#    with open(REGISTRY_FILE, "w") as f:
+#        json.dump(registry, f, indent=2)
 
 def get_agent(registry, agent_id: str):
     return registry.get("agents", {}).get(agent_id)
