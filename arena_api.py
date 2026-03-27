@@ -41,7 +41,7 @@ def agent_exists(registry, name):
 
 @app.get("/version")
 def version():
-    return {"api-version": "0.1"}
+    return {"api-version": "0.2"}
 
 @app.get("/")
 def root():
