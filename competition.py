@@ -340,16 +340,32 @@ def save_match_to_db(match_result: dict):
         conn = get_conn()
         cur = conn.cursor()
 
-        agents = match_result.get("agents", {})
-        agent_ids = list(agents.keys())
+        agents = match_result.get("agents", [])
 
-        agent_a = agent_ids[0] if len(agent_ids) > 0 else None
-        agent_b = agent_ids[1] if len(agent_ids) > 1 else None
+        agent_a = None
+        agent_b = None
+
+        if isinstance(agents, dict):
+            agent_ids = list(agents.keys())
+            agent_a = agent_ids[0] if len(agent_ids) > 0 else None
+            agent_b = agent_ids[1] if len(agent_ids) > 1 else None
+
+        elif isinstance(agents, list):
+            agent_a = agents[0].get("id") if len(agents) > 0 else None
+            agent_b = agents[1].get("id") if len(agents) > 1 else None
 
         scores = match_result.get("scores", {})
 
-        score_a = scores.get(agent_a)
-        score_b = scores.get(agent_b)
+        score_a = None
+        score_b = None
+
+        if isinstance(scores, dict):
+            score_a = scores.get(agent_a)
+            score_b = scores.get(agent_b)
+
+        elif isinstance(scores, list):
+            score_a = scores[0] if len(scores) > 0 else None
+            score_b = scores[1] if len(scores) > 1 else None
 
         cur.execute(
             """
