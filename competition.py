@@ -358,7 +358,8 @@ def save_match_to_db(match_result: dict):
 
         # winner handling
         win_stat = match_result.get("win_stat", {})
-        winner = win_stat.get("winner")
+        #winner = win_stat.get("winner")
+        winner = json.dumps(match_result["win_stat"]["winner"])
 
         # handle draw case
         if win_stat.get("is_draw"):
