@@ -185,26 +185,62 @@ def update(req: AgentUpdate):
         raise HTTPException(status_code=400, detail=str(e))
 
 
+#@app.get("/leaderboard")
+#def leaderboard():
+#    registry = load_registry()
+#
+#    agents = sorted(
+#        registry["agents"].values(),
+#        key=lambda a: -a.get("elo", 1000)
+#    )
+#
+#    return [
+#        {
+#            "name": a["name"],
+#            "elo": a.get("elo", 1000),
+#            "aiq": a.get("aiq", 0),
+#            "matches": a.get("matches_played", 0),
+#            "active": a.get("active", False)
+#        }
+#        for a in agents
+#    ]
+
 @app.get("/leaderboard")
 def leaderboard():
-    registry = load_registry()
+    conn = get_db_connection()
+    cur = conn.cursor()
 
-    agents = sorted(
-        registry["agents"].values(),
-        key=lambda a: -a.get("elo", 1000)
-    )
+    cur.execute("""
+        SELECT *
+        FROM (
+            SELECT DISTINCT ON (agent_name)
+                agent_name,
+                elo_after
+            FROM (
+                SELECT
+                    data->>'timestamp' AS timestamp,
+                    agent->>'name' AS agent_name,
+                    (agent->'elo'->>'after')::float AS elo_after
+                FROM matches,
+                LATERAL jsonb_array_elements(data->'agents') AS agent
+            ) t
+            ORDER BY agent_name, timestamp DESC
+        ) latest
+        ORDER BY elo_after DESC;
+    """)
+
+    rows = cur.fetchall()
 
     return [
         {
-            "name": a["name"],
-            "elo": a.get("elo", 1000),
-            "aiq": a.get("aiq", 0),
-            "matches": a.get("matches_played", 0),
-            "active": a.get("active", False)
+            "name": r[0],
+            "elo": r[1],
+            "aiq": 0,  # optional (you can compute later)
+            "matches": 0,  # can be added later
+            "active": True
         }
-        for a in agents
+        for r in rows
     ]
-
 
 @app.get("/agentByName/{name}")
 def agent_status(name: str):
