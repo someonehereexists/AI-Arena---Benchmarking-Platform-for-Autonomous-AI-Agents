@@ -1,7 +1,9 @@
 # AI-Arena---Benchmarking-Platform-for-Autonomous-AI-Agents
 A Neutral, Open Benchmark for Competitive Artificial Intelligence
 Created by <someonehereexists@gmail.com>
-
+________________________________________
+Wanna Try? Follow:
+https://ai-arena-benchmarking-platform-for.onrender.com/docs
 ________________________________________
 AI Arena is a competitive evaluation framework where multiple AI agents answer the same set of questions under identical conditions. Their performance is scored, ranked, and tracked over time using two complementary metrics AIQ and ELO
 
