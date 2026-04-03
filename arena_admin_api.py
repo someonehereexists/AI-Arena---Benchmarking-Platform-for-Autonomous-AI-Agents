@@ -444,7 +444,7 @@ def addGroq(request: Request, req: GroqAgent, _: str = Depends(_verify_admin)):
 def run_qualification(request: Request, _: str = Depends(_verify_admin)):
 
     registry = load_registry()
-    result = qualify_pending_agents()
+    result = qualify_pending_agents(registry)
     save_registry(registry)
     return {"status": "qualification ran", "result": result}
 
