@@ -16,6 +16,7 @@ from auditlog import admin_log
 from pydantic import BaseModel
 from agent_qualify import qualify_agent
 from auditlog import log_audit
+from datetime import datetime, UTC
 
 
 arena_thread = None
