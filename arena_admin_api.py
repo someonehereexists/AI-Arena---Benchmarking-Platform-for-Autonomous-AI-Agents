@@ -8,11 +8,13 @@
 import os, sys, threading, signal, subprocess
 from fastapi.security import APIKeyHeader
 from fastapi import FastAPI, APIRouter, Request, HTTPException, BackgroundTasks, Depends
-from registry import load_registry, save_registry, find_agent
+from registry import load_registry, save_registry, find_agent, normalize_agent
 from master_ai import health_police
 from ai_arena_mvp_groq import run_ai_arena
 from time import sleep
 from auditlog import admin_log
+from pydantic import BaseModel
+from agent_qualify import qualify_agent
 
 arena_thread = None
 arena_running = False
@@ -356,6 +358,82 @@ def set_baseline(request: Request, agent_id: str, _: str = Depends(_verify_admin
 
     return {"status": "baseline_updated", "agent_id": agent_id}
 
+# ----------------------------
+# Request models
+# ----------------------------
+
+class GroqAgent(BaseModel):
+    id: str
+    name: str
+    type: str = "groq"
+    model: str = "unknown"
+    api_key_env: str = "GROQ_API_KEY"
+    owner: str = "someonehereexists@gmail.com"
+    submitted_by: str = "internal"
+    timeout: int = 5
+    license: str = "evaluation-only"
+
+
+@app.post("/join")
+def addGroq(req: GroqAgent):
+    try:
+        registry = load_registry()
+        
+        new_agent = {
+            "id": req.id,
+            "name": req.name,
+            "type": req.type,
+            "model": req.model,
+            "api_key_env": req.api_key_env,
+            "active": False,
+            "pending": True,
+            "owner": req.owner,
+            "submitted_by": req.submitted_by,
+            "timeout": req.timeout,
+            "license": req.license,
+            "matches_played": 0,
+            "elo": 1000,
+            "aiq": 0.0,
+        }
+
+        normalize_agent(new_agent)
+     
+        registry["agents"][req.id] = new_agent
+         
+        save_registry(registry)
+        
+        log_audit(
+            action="join",
+            agent_id=req.id,
+            details={"name": req.name, "type": req.type}
+        )
+
+        qual = qualify_agent(req.id)
+        
+        timestamp = datetime.now(UTC).isoformat() + "Z"
+        date = timestamp[:10]
+        path = os.path.join(AGENT_DIR, date)
+        os.makedirs(path, exist_ok=True)
+        now = datetime.now()
+        filename = f'agent_{req.name}_' + now.strftime("%Y%m%d_%H%M%S")+".json"
+        filepath = os.path.join(path, filename)
+
+        with open(filepath, "w", encoding="utf-8") as f:
+            json.dump(qual, f, indent=2)
+
+        return {
+            "join": "added",
+            "qualification": qual
+        }
+        
+    except ValueError as e:
+        log_audit(
+            action="join",
+            agent_id=req.id,
+            details={"name": req.name, "error": str(e)}
+        )
+        raise HTTPException(status_code=400, detail=str(e))
+        
 #app.include_router(admin)
 
 
