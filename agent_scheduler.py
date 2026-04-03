@@ -1,12 +1,15 @@
 import json
 import random
 from datetime import datetime, timedelta, UTC
+from registry import load_registry
 
-REGISTRY_FILE = "agents_registry.json"
+#REGISTRY_FILE = "agents_registry.json"
 
 def load_agents():
-    with open(REGISTRY_FILE) as f:
-        return json.load(f)["agents"].values()
+    registry = load_registry()
+    return registry.get("agents", {}).values()
+#    with open(REGISTRY_FILE) as f:
+#        return json.load(f)["agents"].values()
 
 
 def compute_weight(agent):
