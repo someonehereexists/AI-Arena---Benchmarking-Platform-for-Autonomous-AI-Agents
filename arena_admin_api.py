@@ -34,6 +34,7 @@ app = FastAPI(
 )
 
 ADMIN_TOKEN = os.getenv("ARENA_ADMIN_TOKEN", "dev-secret")
+AGENT_DIR = "join_reqs"
 
 #create admin router 
 #admin = APIRouter(prefix="/admin", tags=["admin"])
