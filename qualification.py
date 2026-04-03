@@ -20,7 +20,7 @@ def qualify_pending_agents(registry):
     pending = pending_agents(registry)   #agent_configs
 
     if not pending:
-        return
+        return ("No Agent Pending")
 
     from agent_factory import create_agent
     
@@ -88,6 +88,7 @@ def qualify_pending_agents(registry):
 
         print("---------------------------")    
     print(result_summary)
+    return(result_summary)
 
 #if __name__ == "__main__":
 #    qualify_pending_agents()
