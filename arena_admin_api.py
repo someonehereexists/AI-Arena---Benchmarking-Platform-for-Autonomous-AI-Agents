@@ -5,7 +5,7 @@
 # netstat -ano | findstr :8001
 # taskkill /PID 10360 /f
 
-import os, sys, threading, signal, subprocess
+import os, sys, threading, signal, subprocess, json
 from fastapi.security import APIKeyHeader
 from fastapi import FastAPI, APIRouter, Request, HTTPException, BackgroundTasks, Depends
 from registry import load_registry, save_registry, find_agent, normalize_agent
