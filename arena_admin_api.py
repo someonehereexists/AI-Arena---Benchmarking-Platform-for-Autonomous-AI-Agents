@@ -15,6 +15,8 @@ from time import sleep
 from auditlog import admin_log
 from pydantic import BaseModel
 from agent_qualify import qualify_agent
+from auditlog import log_audit
+
 
 arena_thread = None
 arena_running = False
@@ -376,6 +378,7 @@ class GroqAgent(BaseModel):
 
 @app.post("/join")
 def addGroq(req: GroqAgent):
+    _verify_admin(request)
     try:
         registry = load_registry()
         
