@@ -17,6 +17,7 @@ from pydantic import BaseModel
 from agent_qualify import qualify_agent
 from auditlog import log_audit
 from datetime import datetime, UTC
+from qualification import qualify_pending_agents
 
 
 arena_thread = None
@@ -378,7 +379,7 @@ class GroqAgent(BaseModel):
     license: str = "evaluation-only"
 
 
-@app.post("/admin/addGroq")
+@app.post("/addGroq")
 def addGroq(request: Request, req: GroqAgent, _: str = Depends(_verify_admin)):
     #_verify_admin(request)
     try:
@@ -438,7 +439,15 @@ def addGroq(request: Request, req: GroqAgent, _: str = Depends(_verify_admin)):
             details={"name": req.name, "error": str(e)}
         )
         raise HTTPException(status_code=400, detail=str(e))
-        
+
+@app.post("/run_qualification")
+def run_qualification(request: Request, _: str = Depends(_verify_admin)):
+
+    registry = load_registry()
+    result = qualify_pending_agents()
+    save_registry(registry)
+    return {"status": "qualification ran", "result": result}
+
 #app.include_router(admin)
 
 
