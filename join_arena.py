@@ -12,7 +12,7 @@ def validate_agent(new_agent):
             raise ValueError(f"Missing field: {f}")
 
 
-REGISTRY_FILE = "agents_registry.json"
+#REGISTRY_FILE = "agents_registry.json"
 
 def join_arena(
     name: str,
