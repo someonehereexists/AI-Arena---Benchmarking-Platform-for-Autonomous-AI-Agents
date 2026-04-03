@@ -376,8 +376,8 @@ class GroqAgent(BaseModel):
     license: str = "evaluation-only"
 
 
-@app.post("/join")
-def addGroq(req: GroqAgent):
+@app.post("/admin/addGroq")
+def addGroq(request: Request, req: GroqAgent):
     _verify_admin(request)
     try:
         registry = load_registry()
