@@ -377,8 +377,8 @@ class GroqAgent(BaseModel):
 
 
 @app.post("/admin/addGroq")
-def addGroq(request: Request, req: GroqAgent):
-    _verify_admin(request)
+def addGroq(request: Request, req: GroqAgent, _: str = Depends(_verify_admin)):
+    #_verify_admin(request)
     try:
         registry = load_registry()
         
