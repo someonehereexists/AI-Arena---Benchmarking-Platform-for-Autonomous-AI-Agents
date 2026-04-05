@@ -104,6 +104,25 @@ def init_db():
     )
     """)
 
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS audit_logs (
+    id SERIAL PRIMARY KEY,
+
+    event_type VARCHAR(100),       -- e.g. "MATCH_PLAYED", "AGENT_REGISTERED"
+    entity_type VARCHAR(50),       -- "agent", "match", "system"
+    entity_id VARCHAR(100),        -- agent_id, match_id, etc
+
+    action VARCHAR(100),           -- "create", "update", "delete", "run"
+
+    status VARCHAR(50),            -- "success", "failure"
+
+    message TEXT,                  -- human-readable log
+    metadata JSONB,                -- flexible structured data
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+    """)
+  
     cur.execute("SELECT COUNT(*) FROM registry")
     count = cur.fetchone()[0]
 
