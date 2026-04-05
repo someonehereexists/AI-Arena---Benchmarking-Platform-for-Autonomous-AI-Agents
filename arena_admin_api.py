@@ -457,10 +457,10 @@ def run_qualification(request: Request, _: str = Depends(_verify_admin)):
 @app.post("/migrate_logs")
 def migrate_logs(request: Request, _: str = Depends(_verify_admin)):
     init_db()
-    db = get_conn()
+#    db = get_conn()
     migrate_status = {}
-    migrate_status = log_migrate(db)
-    db.close()
+    migrate_status = log_migrate()
+#    db.close()
     print("Migrate status: ", migrate_status)
     return(migrate_status)
 
