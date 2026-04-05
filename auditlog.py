@@ -80,7 +80,7 @@ def log_migrate():
                 )
         audit_stat = "success"        
     except Exception as e:
-        audit_stat = str(r)
+        audit_stat = str(e)
         
     try:
         with open(ADMIN_LOG) as f:
@@ -95,6 +95,6 @@ def log_migrate():
                 )                
         admin_stat = "success"        
     except Exception as e:
-        admin_stat = str(r)
+        admin_stat = str(e)
     
     return{"audit": audit_stat, "admin": admin_stat}
