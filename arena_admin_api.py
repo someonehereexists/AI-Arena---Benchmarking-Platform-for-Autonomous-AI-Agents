@@ -456,7 +456,7 @@ def run_qualification(request: Request, _: str = Depends(_verify_admin)):
 
 @app.post("/migrate_logs")
 def migrate_logs(request: Request, _: str = Depends(_verify_admin)):
-    migrate_stats = log_migrate()
+    migrate_status = log_migrate()
     return{migrate_status}
 
 #app.include_router(admin)
