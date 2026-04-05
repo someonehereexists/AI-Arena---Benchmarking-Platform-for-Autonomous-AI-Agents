@@ -460,6 +460,6 @@ def migrate_logs(request: Request, _: str = Depends(_verify_admin)):
     migrate_status = {}
     migrate_status = log_migrate()
     print("Migrate status: ", migrate_status)
-    return{migrate_status}
+    return(migrate_status)
 
 #app.include_router(admin)
