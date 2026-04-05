@@ -1,5 +1,6 @@
 import json
 from datetime import datetime, UTC
+from registry import get_conn
 
 AUDIT_FILE = "audit_log.jsonl"
 ADMIN_LOG = "admin_log.jsonl"
@@ -68,9 +69,13 @@ def log_audit(
 
 def log_migrate():
     try:
+        db = get_conn()
         with open(AUDIT_FILE) as f:
             for line in f:
-                record = json.loads(line)
+                try:
+                    record = json.loads(line)
+                except:
+                    continue
                 log_audit(
                     db,
                     action=record["action"],
@@ -85,7 +90,10 @@ def log_migrate():
     try:
         with open(ADMIN_LOG) as f:
             for line in f:
-                record = json.loads(line)
+                try:
+                    record = json.loads(line)
+                except:
+                    continue
                 log_audit(
                     db,
                     action=record["action"],
@@ -96,5 +104,7 @@ def log_migrate():
         admin_stat = "success"        
     except Exception as e:
         admin_stat = str(e)
+    
+    db.commit()
     
     return{"audit": audit_stat, "admin": admin_stat}
