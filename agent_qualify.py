@@ -25,7 +25,8 @@ def qualify_agent(agent_id: str):
         log_audit(
             action="qualification",
             agent_id=agent_id,
-            details=details
+            details=details,
+            event_type="AUDIT"
         )
         return details
 
@@ -36,7 +37,8 @@ def qualify_agent(agent_id: str):
         log_audit(
             action="qualification",
             agent_id=agent_id,
-            details=details
+            details=details,
+            event_type="AUDIT"
         )
         return details
 
@@ -121,7 +123,8 @@ def qualify_agent(agent_id: str):
     log_audit(
         action="qualification",
         agent_id=agent_id,
-        details=details
+        details=details,
+        event_type="AUDIT"
     )
         
     save_registry(registry)
