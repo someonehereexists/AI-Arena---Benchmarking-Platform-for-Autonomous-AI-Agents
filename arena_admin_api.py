@@ -8,7 +8,7 @@
 import os, sys, threading, signal, subprocess, json
 from fastapi.security import APIKeyHeader
 from fastapi import FastAPI, APIRouter, Request, HTTPException, BackgroundTasks, Depends
-from registry import load_registry, save_registry, find_agent, normalize_agent
+from registry import load_registry, save_registry, find_agent, normalize_agent, init_db
 from master_ai import health_police
 from ai_arena_mvp_groq import run_ai_arena
 from time import sleep
@@ -456,6 +456,7 @@ def run_qualification(request: Request, _: str = Depends(_verify_admin)):
 
 @app.post("/migrate_logs")
 def migrate_logs(request: Request, _: str = Depends(_verify_admin)):
+    init_db()
     migrate_status = {}
     migrate_status = log_migrate()
     print("Migrate status: ", migrate_status)
