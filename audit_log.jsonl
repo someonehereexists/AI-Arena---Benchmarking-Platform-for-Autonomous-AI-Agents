@@ -1,0 +1,28 @@
+{"ts": "2026-02-23T15:03:14.960873+00:00", "action": "join", "agent_id": "newag", "details": {"name": "newagnam", "type": "http"}}
+{"ts": "2026-02-23T15:05:38.072243+00:00", "action": "join", "agent_id": "newag", "details": {"name": "newagnam", "type": "http"}}
+{"ts": "2026-02-23T15:05:44.787439+00:00", "action": "qualification", "agent_id": "newag", "details": {"status": "suspended", "reason": "HTTPSConnectionPool(host='newag', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(\"HTTPSConnection(host='newag', port=443): Failed to resolve 'newag' ([Errno 11001] getaddrinfo failed)\"))"}}
+{"ts": "2026-02-23T15:08:59.167076+00:00", "action": "join", "agent_id": "newag", "details": {"name": "udpatename"}}
+{"ts": "2026-02-23T15:09:05.798562+00:00", "action": "qualification", "agent_id": "newag", "details": {"status": "suspended", "reason": "HTTPSConnectionPool(host='newag', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(\"HTTPSConnection(host='newag', port=443): Failed to resolve 'newag' ([Errno 11001] getaddrinfo failed)\"))"}}
+{"ts": "2026-02-23T15:10:54.748507+00:00", "action": "join", "agent_id": "newag", "details": {"name": "udpatename"}}
+{"ts": "2026-02-23T15:12:12.266170+00:00", "action": "reactivate", "agent_id": "newag", "details": {"id": "newag", "status": "reactivate"}}
+{"ts": "2026-02-23T15:18:03.968929+00:00", "action": "reactivate", "agent_id": "newag", "details": {"id": "newag", "status": "reactivate"}}
+{"ts": "2026-02-23T15:18:03.974491+00:00", "action": "qualification", "agent_id": "newag", "details": {"status": "skipped", "message": "Agent not pending"}}
+{"ts": "2026-02-24T07:49:30.686957+00:00", "action": "join", "agent_id": "newag", "details": {"name": "newagnam", "type": "http"}}
+{"ts": "2026-02-24T07:49:36.098671+00:00", "action": "qualification", "agent_id": "newag", "details": {"status": "suspended", "reason": "HTTPSConnectionPool(host='newag', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(\"HTTPSConnection(host='newag', port=443): Failed to resolve 'newag' ([Errno 11001] getaddrinfo failed)\"))"}}
+{"ts": "2026-02-25T09:21:34.897571+00:00", "action": "update", "agent_id": "groq_llama3_8b", "details": {"name": "LLaMA-3 8B (Groq)", "owner": "someonehereexists@gmail.com"}}
+{"ts": "2026-02-25T10:43:12.268262+00:00", "action": "join", "agent_id": "newagt", "details": {"name": "newagnamtttt", "type": "http"}}
+{"ts": "2026-02-25T10:43:18.761948+00:00", "action": "qualification", "agent_id": "newagt", "details": {"status": "suspended", "reason": "HTTPSConnectionPool(host='newatttg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(\"HTTPSConnection(host='newatttg', port=443): Failed to resolve 'newatttg' ([Errno 11001] getaddrinfo failed)\"))"}}
+{"ts": "2026-02-25T11:09:31.798669+00:00", "action": "join", "agent_id": "79a16a0b-629a-4fe8-bd41-5cca51bf95a4", "details": {"name": "string", "type": "http"}}
+{"ts": "2026-02-25T11:09:32.962766+00:00", "action": "qualification", "agent_id": "79a16a0b-629a-4fe8-bd41-5cca51bf95a4", "details": {"status": "suspended", "reason": "Invalid URL 'string': No scheme supplied. Perhaps you meant https://string?"}}
+{"ts": "2026-02-25T11:11:01.709822+00:00", "action": "join", "agent_id": "565ab054-ceb1-4083-b165-ce8fc6fe66a8", "details": {"name": "string", "type": "http"}}
+{"ts": "2026-02-25T11:13:35.720111+00:00", "action": "join", "agent_id": "86bc8ea7-6bff-4db8-8423-e387e50ecf2f", "details": {"name": "string2", "type": "http"}}
+{"ts": "2026-02-25T11:13:35.720837+00:00", "action": "qualification", "agent_id": "86bc8ea7-6bff-4db8-8423-e387e50ecf2f", "details": {"status": "error", "message": "Baseline agent not setup"}}
+{"ts": "2026-02-27T10:58:26.437268+00:00", "action": "update", "agent_id": "groq_llama3_70b", "details": {"error": "Can't change baseline agent"}}
+{"ts": "2026-02-27T11:00:06.936884+00:00", "action": "update", "agent_id": "asdasa", "details": {"error": "External agents must use type='http'. "}}
+{"ts": "2026-02-27T11:01:58.524784+00:00", "action": "join", "agent_id": "0c6911d1-3117-4dc2-acc3-27f9a9478017", "details": {"name": "string2", "type": "http"}}
+{"ts": "2026-02-27T11:01:59.726535+00:00", "action": "qualification", "agent_id": "0c6911d1-3117-4dc2-acc3-27f9a9478017", "details": {"status": "suspended", "reason": "Invalid URL 'string2': No scheme supplied. Perhaps you meant https://string2?"}}
+{"ts": "2026-02-27T11:09:54.183076+00:00", "action": "reactivate", "agent_id": "groq_llama3_8b", "details": {"id": "groq_llama3_8b", "status": "reactivate"}}
+{"ts": "2026-02-27T11:09:54.287540+00:00", "action": "qualification", "agent_id": "groq_llama3_8b", "details": {"status": "skipped", "message": "Agent not pending"}}
+{"ts": "2026-02-27T11:10:00.448948+00:00", "action": "reactivate", "agent_id": "groq_llama3_70b", "details": {"error": "Not allowed for this agent"}}
+{"ts": "2026-02-27T11:10:54.291602+00:00", "action": "key_update", "agent_id": "groq_llama3_70b", "details": {"error": "Can't change for baseline agent"}}
+{"ts": "2026-02-28T12:37:55.815506+00:00", "action": "reactivate", "agent_id": "groq_llama3_70b", "details": {"error": "Not allowed for this agent"}}

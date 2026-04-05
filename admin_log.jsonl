@@ -1,0 +1,10 @@
+{"ts": "2026-02-27T10:39:18.560997+00:00", "action": "baseline_update", "agent_id": "groq_llama3_8b", "details": {"old_baseline": ["groq_llama3_8b"]}}
+{"ts": "2026-02-27T10:40:50.935012+00:00", "action": "baseline_update", "agent_id": "groq_llama3_70b", "details": {"old_baseline": null}}
+{"ts": "2026-02-27T10:41:12.358128+00:00", "action": "baseline_update", "agent_id": "groq_llama3_8b", "details": {"old_baseline": []}}
+{"ts": "2026-02-27T10:41:28.877368+00:00", "action": "baseline_update", "agent_id": "groq_llama3_70b", "details": {"old_baseline": ["groq_llama3_8b"]}}
+{"ts": "2026-02-27T10:42:09.412796+00:00", "action": "baseline_update", "agent_id": "groq_llama3_8b", "details": {"old_baseline": ["groq_llama3_70b"]}}
+{"ts": "2026-02-27T10:42:14.261438+00:00", "action": "baseline_update", "agent_id": "groq_llama3_8b", "details": {"old_baseline": ["groq_llama3_8b"]}}
+{"ts": "2026-02-27T10:42:18.312479+00:00", "action": "baseline_update", "agent_id": "groq_llama3_70b", "details": {"old_baseline": ["groq_llama3_8b"]}}
+{"ts": "2026-02-27T10:44:54.687673+00:00", "action": "suspend", "agent_id": "groq_llama3_8b", "details": {"status": "suspended"}}
+{"ts": "2026-02-27T10:45:45.809618+00:00", "action": "reactivate", "agent_id": "groq_llama3_8b", "details": {"status": "success"}}
+{"ts": "2026-03-02T09:55:17.021864+00:00", "action": "health_run", "agent_id": null, "details": {"status": "success"}}
