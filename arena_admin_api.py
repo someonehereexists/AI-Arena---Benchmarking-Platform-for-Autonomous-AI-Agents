@@ -15,7 +15,7 @@ from time import sleep
 #from auditlog import admin_log
 from pydantic import BaseModel
 from agent_qualify import qualify_agent
-from auditlog import log_audit
+from auditlog import log_audit, log_migrate
 from datetime import datetime, UTC
 from qualification import qualify_pending_agents
 
@@ -60,7 +60,7 @@ def _verify_admin(api_key: str = Depends(api_key_header)):
 
 @app.get("/version")
 def version():
-    return {"admin-api-version": "0.2"}
+    return {"admin-api-version": "0.3"}
 
 def _shutdown():
     os.kill(os.getpid(), signal.SIGINT)
@@ -454,7 +454,9 @@ def run_qualification(request: Request, _: str = Depends(_verify_admin)):
     save_registry(registry)
     return {"status": "qualification ran", "result": result}
 
+@app.post("/migrate_logs")
+def migrate_logs(request: Request, _: str = Depends(_verify_admin)):
+    log_migrate()
+    return("status": "completed")
+
 #app.include_router(admin)
-
-
-
