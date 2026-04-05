@@ -101,7 +101,8 @@ def join(req: AgentSubmission):
         log_audit(
             action="join",
             agent_id=agent_id,
-            details={"name": req.name, "type": req.type}
+            details={"name": req.name, "type": req.type},
+            event_type="AUDIT"
         )
 
         qual = qualify_agent(agent_id)
@@ -126,7 +127,8 @@ def join(req: AgentSubmission):
         log_audit(
             action="join",
             agent_id=agent_id,
-            details={"name": req.name, "error": str(e)}
+            details={"name": req.name, "error": str(e)},
+            event_type="AUDIT"
         )
         raise HTTPException(status_code=400, detail=str(e))
 
@@ -155,7 +157,8 @@ def update(req: AgentUpdate):
         log_audit(
             action="update",
             agent_id=req.id,
-            details=payload
+            details=payload,
+            event_type="AUDIT"
         )
         
         requal = result["update"].pop("requal")
@@ -180,7 +183,8 @@ def update(req: AgentUpdate):
         log_audit(
             action="update",
             agent_id=agent_id or None,
-            details={"error": str(e)}
+            details={"error": str(e)},
+            event_type="AUDIT"
         )
         raise HTTPException(status_code=400, detail=str(e))
 
@@ -299,7 +303,8 @@ def reactivate_agent(agent_id: str):
         log_audit(
             action="reactivate",
             agent_id=agent_id,
-            details={"error": "Agent not found"}
+            details={"error": "Agent not found"},
+            event_type="AUDIT"
         )
         raise HTTPException(status_code=404, detail="Agent not found")
     
@@ -307,14 +312,16 @@ def reactivate_agent(agent_id: str):
         log_audit(
             action="reactivate",
             agent_id=agent_id,
-            details={"error": "Not allowed for this agent"}
+            details={"error": "Not allowed for this agent"},
+            event_type="AUDIT"
         )
         raise HTTPException(status_code=403, detail="Not allowed for this agent")
 
     log_audit(
         action="reactivate",
         agent_id=agent_id,
-        details={"id": agent_id, "status": "reactivate"}
+        details={"id": agent_id, "status": "reactivate"},
+        event_type="AUDIT"
     )
 
     
@@ -338,7 +345,8 @@ def replace_key(req: AgentKeyUpdate):
             log_audit(
                 action="key_update",
                 agent_id=req.id,
-                details={"error": "Agent not found"}
+                details={"error": "Agent not found"},
+                event_type="AUDIT"
             )
             raise ValueError("Agent not found")
 
@@ -349,7 +357,8 @@ def replace_key(req: AgentKeyUpdate):
             log_audit(
                 action="key_update",
                 agent_id=req.id,
-                details={"error": "Can't change for baseline agent"}
+                details={"error": "Can't change for baseline agent"},
+                event_type="AUDIT"
             )
             raise ValueError("Can't change for baseline agent")
             
@@ -366,7 +375,8 @@ def replace_key(req: AgentKeyUpdate):
         log_audit(
             action="replace_key",
             agent_id=req.id,
-            details={"api_key_env": req.api_key_env}
+            details={"api_key_env": req.api_key_env},
+            event_type="AUDIT"
         )
 
         save_registry(registry)
