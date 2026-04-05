@@ -28,7 +28,6 @@ ADMIN_LOG = "admin_log.jsonl"
 #        f.write(json.dumps(record) + "\n")        
 
 def log_audit(
-    db,
     action: str,
     agent_id: str | None = None,
     details: dict | None = None,
@@ -38,6 +37,7 @@ def log_audit(
     message: str | None = None,
     trace_id: str | None = None,
 ):
+    db = get_conn()
     record = {
         "event_type": event_type,
         "entity_type": "agent",
@@ -66,6 +66,8 @@ def log_audit(
             record["created_at"]
         )
     )
+    db.commit()
+    db.close()
 
 def log_migrate(db):
     try:
@@ -75,13 +77,26 @@ def log_migrate(db):
                     record = json.loads(line)
                 except:
                     continue
-                log_audit(
-                    db,
-                    action=record["action"],
-                    agent_id=record["agent_id"],
-                    details=record["details"],
-                    event_type="AUDIT"
+                db.execute(
+                    """
+                    INSERT INTO audit_logs 
+                    (event_type, entity_type, entity_id, action, status, message, metadata, created_at)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                    """,
+                    (
+                        record["action"],
+                        record["agent_id"],
+                        record["details"],
+                        event_type="AUDIT"
+                    )
                 )
+#                log_audit(
+#                    db,
+#                    action=record["action"],
+#                    agent_id=record["agent_id"],
+#                    details=record["details"],
+#                    event_type="AUDIT"
+#                )
         audit_stat = "success"        
     except Exception as e:
         audit_stat = str(e)
@@ -93,13 +108,26 @@ def log_migrate(db):
                     record = json.loads(line)
                 except:
                     continue
-                log_audit(
-                    db,
-                    action=record["action"],
-                    agent_id=record["agent_id"],
-                    details=record["details"],
-                    event_type="ADMIN"
-                )                
+                 db.execute(
+                    """
+                    INSERT INTO audit_logs 
+                    (event_type, entity_type, entity_id, action, status, message, metadata, created_at)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                    """,
+                    (
+                        record["action"],
+                        record["agent_id"],
+                        record["details"],
+                        event_type="ADMIN"
+                    )
+                )
+#                log_audit(
+##                    db,
+ #                   action=record["action"],
+ #                   agent_id=record["agent_id"],
+ #                   details=record["details"],
+ #                   event_type="ADMIN"
+ #               )                
         admin_stat = "success"        
     except Exception as e:
         admin_stat = str(e)
