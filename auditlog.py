@@ -67,24 +67,34 @@ def log_audit(
     )
 
 def log_migrate():
-    with open(AUDIT_FILE) as f:
-        for line in f:
-            record = json.loads(line)
-            log_audit(
-                db,
-                action=record["action"],
-                agent_id=record["agent_id"],
-                details=record["details"],
-                event_type="AUDIT"
-            )
-            
-    with open(ADMIN_LOG) as f:
-        for line in f:
-            record = json.loads(line)
-            log_audit(
-                db,
-                action=record["action"],
-                agent_id=record["agent_id"],
-                details=record["details"],
-                event_type="ADMIN"
-            )                
+    try:
+        with open(AUDIT_FILE) as f:
+            for line in f:
+                record = json.loads(line)
+                log_audit(
+                    db,
+                    action=record["action"],
+                    agent_id=record["agent_id"],
+                    details=record["details"],
+                    event_type="AUDIT"
+                )
+        audit_stat = "success"        
+    except Exception as e:
+        audit_stat = str(r)
+        
+    try:
+        with open(ADMIN_LOG) as f:
+            for line in f:
+                record = json.loads(line)
+                log_audit(
+                    db,
+                    action=record["action"],
+                    agent_id=record["agent_id"],
+                    details=record["details"],
+                    event_type="ADMIN"
+                )                
+        admin_stat = "success"        
+    except Exception as e:
+        admin_stat = str(r)
+    
+    return{"audit": audit_stat, "admin": admin_stat}
