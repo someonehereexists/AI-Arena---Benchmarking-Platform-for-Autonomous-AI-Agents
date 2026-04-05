@@ -12,7 +12,7 @@ from registry import load_registry, save_registry, find_agent, normalize_agent
 from master_ai import health_police
 from ai_arena_mvp_groq import run_ai_arena
 from time import sleep
-from auditlog import admin_log
+#from auditlog import admin_log
 from pydantic import BaseModel
 from agent_qualify import qualify_agent
 from auditlog import log_audit
@@ -108,10 +108,11 @@ def suspend_agent(agent_id: str, request: Request, _: str = Depends(_verify_admi
 
     save_registry(registry)
 
-    admin_log(
+    log_audit(
         action="suspend",
         agent_id=agent_id,
-        details={"status" : "suspended"}
+        details={"status" : "suspended"},
+        event_type="ADMIN"
     )
 
     return {"status": "suspended", "agent_id": agent_id}
@@ -138,10 +139,11 @@ def activate_agent(agent_id: str, request: Request, _: str = Depends(_verify_adm
 
     save_registry(registry)
 
-    admin_log(
+    log_audit(
         action="reactivate",
         agent_id=agent_id,
-        details={"status" : "success"}
+        details={"status" : "success"},
+        event_type="ADMIN"
     )
 
     return {"status": "activated", "agent_id": agent_id}
@@ -158,10 +160,11 @@ def run_health(request: Request, _: str = Depends(_verify_admin)):
 
     result = health_police()
 
-    admin_log(
+    log_audit(
         action="health_run",
         agent_id=None,
-        details={"status" : "success"}
+        details={"status" : "success"},
+        event_type="ADMIN"
     )
 
     return {"status": "health_check_completed", "result":result}
@@ -355,10 +358,11 @@ def set_baseline(request: Request, agent_id: str, _: str = Depends(_verify_admin
     
     save_registry(registry)
 
-    admin_log(
+    log_audit(
         action="baseline_update",
         agent_id=agent_id,
-        details={"old_baseline" : old_baseline}
+        details={"old_baseline" : old_baseline},
+        event_type="ADMIN"
     )
 
     return {"status": "baseline_updated", "agent_id": agent_id}
@@ -411,7 +415,8 @@ def addGroq(request: Request, req: GroqAgent, _: str = Depends(_verify_admin)):
         log_audit(
             action="join",
             agent_id=req.id,
-            details={"name": req.name, "type": req.type}
+            details={"name": req.name, "type": req.type},
+            event_type="ADMIN"
         )
 
         qual = qualify_agent(req.id)
@@ -436,7 +441,8 @@ def addGroq(request: Request, req: GroqAgent, _: str = Depends(_verify_admin)):
         log_audit(
             action="join",
             agent_id=req.id,
-            details={"name": req.name, "error": str(e)}
+            details={"name": req.name, "error": str(e)},
+            event_type="ADMIN"
         )
         raise HTTPException(status_code=400, detail=str(e))
 
