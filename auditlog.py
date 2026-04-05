@@ -1,6 +1,6 @@
 import json
 from datetime import datetime, UTC
-from registry import get_conn
+#from registry import get_conn
 
 AUDIT_FILE = "audit_log.jsonl"
 ADMIN_LOG = "admin_log.jsonl"
@@ -67,9 +67,8 @@ def log_audit(
         )
     )
 
-def log_migrate():
+def log_migrate(db):
     try:
-        db = get_conn()
         with open(AUDIT_FILE) as f:
             for line in f:
                 try:
