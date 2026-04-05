@@ -90,7 +90,7 @@ def log_migrate():
                     (
                         record["action"],
                         record["agent_id"],
-                        record["details"],
+                        json.dumps(record["details"] or {}),
                         "AUDIT"
                     )
                 )
@@ -121,7 +121,7 @@ def log_migrate():
                     (
                         record["action"],
                         record["agent_id"],
-                        record["details"],
+                        json.dumps(record["details"] or {}),
                         "ADMIN"
                     )
                 )
