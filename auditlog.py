@@ -1,6 +1,6 @@
 import json
 from datetime import datetime, UTC
-#from registry import get_conn
+from registry import get_conn
 
 AUDIT_FILE = "audit_log.jsonl"
 ADMIN_LOG = "admin_log.jsonl"
@@ -37,7 +37,8 @@ def log_audit(
     message: str | None = None,
     trace_id: str | None = None,
 ):
-    db = get_conn()
+    conn = get_conn()
+    db = conn.cursor()
     record = {
         "event_type": event_type,
         "entity_type": "agent",
@@ -66,11 +67,14 @@ def log_audit(
             record["created_at"]
         )
     )
-    db.commit()
+    conn.commit()
     db.close()
+    conn.close()
 
 def log_migrate(db):
     try:
+        conn = get_conn()
+        db = conn.cursor()
         with open(AUDIT_FILE) as f:
             for line in f:
                 try:
@@ -80,14 +84,14 @@ def log_migrate(db):
                 db.execute(
                     """
                     INSERT INTO audit_logs 
-                    (event_type, entity_type, entity_id, action, status, message, metadata, created_at)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                    (action, entity_id, metadata, event_type)
+                    VALUES (%s, %s, %s, %s)
                     """,
                     (
                         record["action"],
                         record["agent_id"],
                         record["details"],
-                        event_type="AUDIT"
+                        "AUDIT"
                     )
                 )
 #                log_audit(
@@ -108,17 +112,17 @@ def log_migrate(db):
                     record = json.loads(line)
                 except:
                     continue
-                 db.execute(
+                db.execute(
                     """
                     INSERT INTO audit_logs 
-                    (event_type, entity_type, entity_id, action, status, message, metadata, created_at)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                    (action, entity_id, metadata, event_type)
+                    VALUES (%s, %s, %s, %s)
                     """,
                     (
                         record["action"],
                         record["agent_id"],
                         record["details"],
-                        event_type="ADMIN"
+                        "ADMIN"
                     )
                 )
 #                log_audit(
@@ -132,6 +136,8 @@ def log_migrate(db):
     except Exception as e:
         admin_stat = str(e)
     
-    db.commit()
+    conn.commit()
+    db.close()
+    conn.close()
     
     return{"audit": audit_stat, "admin": admin_stat}
