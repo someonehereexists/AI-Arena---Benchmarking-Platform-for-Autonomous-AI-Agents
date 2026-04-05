@@ -71,7 +71,7 @@ def log_audit(
     db.close()
     conn.close()
 
-def log_migrate(db):
+def log_migrate():
     try:
         conn = get_conn()
         db = conn.cursor()
